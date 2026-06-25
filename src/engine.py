@@ -9,7 +9,7 @@ from typing import AsyncGenerator, Optional
 from dotenv import load_dotenv
 from vllm import AsyncLLMEngine
 from vllm.inputs import TextPrompt
-from vllm.entrypoints.logger import RequestLogger
+from vllm.entrypoints.serve.utils.request_logger import RequestLogger
 from vllm.entrypoints.anthropic.protocol import AnthropicMessagesRequest, AnthropicMessagesResponse, AnthropicError, AnthropicErrorResponse
 from vllm.entrypoints.anthropic.serving import AnthropicServingMessages
 from vllm.entrypoints.openai.chat_completion.protocol import ChatCompletionRequest
