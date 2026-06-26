@@ -31,7 +31,7 @@ DEFAULT_ARGS = {
     "seed": 0,
     "worker_use_ray": False,
     "block_size": 16,
-    "enable_prefix_caching": False,
+    "enable_prefix_caching": True,
     "disable_sliding_window": False,
     "swap_space": 4,
     "cpu_offload_gb": 0,
