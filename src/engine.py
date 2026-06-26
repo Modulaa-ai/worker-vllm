@@ -403,6 +403,21 @@ class OpenAIvLLMEngine(vLLMEngine):
         if openai_request.openai_route == "/v1/chat/completions":
             request_class = ChatCompletionRequest
             generator_function = self.chat_engine.create_chat_completion
+            # GLM-5.x enables chain-of-thought ("thinking") by default, which
+            # adds large reasoning-token overhead/latency and (with the
+            # glm45/glm47 parsers on vLLM 0.23.0) can hide tool calls inside
+            # the <think> block. Default thinking OFF unless the caller opts in
+            # via chat_template_kwargs.enable_thinking or a thinking-activating
+            # reasoning_effort. Set DEFAULT_ENABLE_THINKING=true to revert.
+            if os.getenv("DEFAULT_ENABLE_THINKING", "false").lower() != "true":
+                oi = openai_request.openai_input
+                if isinstance(oi, dict) and oi.get("reasoning_effort") in (None, "", "none", "minimal"):
+                    ctk = oi.get("chat_template_kwargs")
+                    if not isinstance(ctk, dict):
+                        ctk = {}
+                    if "enable_thinking" not in ctk:
+                        ctk["enable_thinking"] = False
+                        oi["chat_template_kwargs"] = ctk
         elif openai_request.openai_route == "/v1/completions":
             request_class = CompletionRequest
             generator_function = self.completion_engine.create_completion
